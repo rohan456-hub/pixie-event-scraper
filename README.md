@@ -1,5 +1,5 @@
 # Pixie Event Intelligence & Analytics Dashboard
-**Developed by: Rohan Modi** 🚀
+**Developed by: Rohan Modi** 
 
 A production-ready, full-stack system designed to automate the discovery, deduplication, and analysis of live events. Built to solve the challenge of manual event tracking.
 
