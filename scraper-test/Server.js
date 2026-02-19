@@ -10,18 +10,24 @@ const PORT = process.env.PORT || 5000;
 const DATA_PATH = path.join(__dirname, "events.json");
 
 app.use(cors());
-app.use(express.static('public')); // Excel download ke 
+
+// STATIC FOLDER SETUP (Most Important)
+// Pehle check karega ki public folder hai ya nahi, varna error aayega
+const publicPath = path.join(__dirname, 'public');
+if (!fs.existsSync(publicPath)) {
+    fs.mkdirSync(publicPath);
+}
+app.use(express.static(publicPath)); 
 
 // ============================
 // 1. AUTOMATION (CRON JOB)
 // ============================
-
 cron.schedule('0 */6 * * *', async () => {
     console.log('--- Scheduled Cron Job: Starting Scraper ---');
     await scrapeBMS("surat");
 });
 
-
+// Manual trigger for testing
 app.get('/api/run-scraper', async (req, res) => {
     const data = await scrapeBMS("surat");
     if (data) res.json({ message: "Scraping successful", count: data.length });
@@ -38,7 +44,6 @@ app.get('/api/dashboard', (req, res) => {
 
     const events = JSON.parse(fs.readFileSync(DATA_PATH));
     
-    // Simple Analytics Logic
     const stats = {
         total: events.length,
         active: events.filter(e => e.status === 'active').length,
@@ -49,17 +54,15 @@ app.get('/api/dashboard', (req, res) => {
     res.json({ events, stats });
 });
 
-
-
+// FIX: Yahan path ekdum wahi hona chahiye jo bmsScrape.js mein hai
 app.get('/api/sync-status', (req, res) => {
     res.json({ 
         status: "Excel Ready", 
-        downloadUrl: "/surat_events.xlsx",
+        downloadUrl: "/surat_events.xlsx", // Don't use city name here if bmsScrape saves as events.xlsx
         cloudSync: "Enabled (Local File System)" 
     });
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`Cron Job scheduled for every 6 hours`);
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
