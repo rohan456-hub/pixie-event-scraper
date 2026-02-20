@@ -9,7 +9,7 @@ function App() {
 
   useEffect(() => {
  
-    fetch("http://localhost:5000/api/dashboard")
+    fetch("https://pixie-event-scraper.onrender.com/api/dashboard")
       .then(res => res.json())
       .then(data => {
         setEvents(data.events);
@@ -21,7 +21,7 @@ function App() {
 
   const downloadExcel = () => {
     
-    window.open("http://localhost:5000/surat_events.xlsx");
+    window.open("https://pixie-event-scraper.onrender.com/surat_events.xlsx")
   };
 
   
